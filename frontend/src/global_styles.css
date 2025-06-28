@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Dark mode (default) */
+  body {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  /* Light mode */
+  body.light-mode {
+    background-color: #ffffff;
+    color: #212529;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-spotify-green hover:bg-green-400 text-black font-semibold py-2 px-6 rounded-full transition-all duration-200 transform hover:scale-105;
+  }
+
+  .btn-secondary {
+    @apply border border-spotify-gray text-white hover:text-black hover:bg-white font-semibold py-2 px-6 rounded-full transition-all duration-200;
+  }
+
+  .btn-secondary.light-mode {
+    @apply border-gray-400 text-gray-700 hover:text-white hover:bg-gray-700;
+  }
+
+  .card {
+    @apply bg-spotify-dark hover:bg-gray-800 rounded-lg p-4 transition-all duration-200 transform hover:scale-105 cursor-pointer;
+  }
+
+  .card.light-mode {
+    @apply bg-light-surface hover:bg-gray-100 text-light-text;
+  }
+
+  .input-field {
+    @apply bg-spotify-black border border-gray-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-spotify-green focus:border-transparent;
+  }
+
+  .input-field.light-mode {
+    @apply bg-white border-gray-300 text-light-text;
+  }
+
+  .sidebar-item {
+    @apply flex items-center space-x-3 text-spotify-gray hover:text-white transition-colors duration-200 cursor-pointer;
+  }
+
+  .sidebar-item.light-mode {
+    @apply text-light-muted hover:text-light-text;
+  }
+
+  .sidebar-item.active {
+    @apply text-white;
+  }
+
+  .sidebar-item.active.light-mode {
+    @apply text-light-text;
+  }
+
+  .theme-bg {
+    @apply bg-black;
+  }
+
+  .theme-bg.light-mode {
+    @apply bg-light-bg;
+  }
+
+  .theme-surface {
+    @apply bg-spotify-dark;
+  }
+
+  .theme-surface.light-mode {
+    @apply bg-light-surface;
+  }
+
+  .theme-text {
+    @apply text-white;
+  }
+
+  .theme-text.light-mode {
+    @apply text-light-text;
+  }
+
+  .theme-muted {
+    @apply text-spotify-gray;
+  }
+
+  .theme-muted.light-mode {
+    @apply text-light-muted;
+  }
+}
+
+/* Avatar styles */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.avatar-option {
+  @apply w-16 h-16 rounded-full cursor-pointer border-2 border-transparent hover:border-spotify-green transition-all duration-200 transform hover:scale-110;
+}
+
+.avatar-option.selected {
+  @apply border-spotify-green ring-2 ring-spotify-green ring-opacity-50;
+}
+
+/* Recently played animations */
+.recently-played-item {
+  @apply transform transition-all duration-200 hover:scale-105;
+}
+
+.recently-played-item:hover .play-overlay {
+  @apply opacity-100;
+}
+
+.play-overlay {
+  @apply absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition-opacity duration-200 rounded-lg;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121212;
+}
+
+body.light-mode ::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #535353;
+  border-radius: 4px;
+}
+
+body.light-mode ::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #727272;
+}
+
+body.light-mode ::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-spotify-green;
+}
+
+/* Music visualizer effect */
+.music-bars {
+  display: flex;
+  align-items: end;
+  height: 20px;
+  gap: 2px;
+}
+
+.music-bar {
+  width: 3px;
+  background: #1db954;
+  border-radius: 1px;
+  animation: musicBars 1s ease-in-out infinite;
+}
+
+.music-bar:nth-child(2) { animation-delay: 0.1s; }
+.music-bar:nth-child(3) { animation-delay: 0.2s; }
+.music-bar:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes musicBars {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}

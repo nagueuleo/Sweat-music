@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  gateway:
+    build: ./gateway
+    ports:
+      - '3000:3000'
+    depends_on:
+      - playlist-service
+      - user-service
+      - music-service
+      - mongo
+    environment:
+      - NODE_ENV=development
+
+  playlist-service:
+    build: ./playlist-service
+    ports:
+      - '3001:3001'
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb+srv://usagie2007:1976lmzabab@cluster0.wivdsja.mongodb.net/spotify-microservices?retryWrites=true&w=majority&appName=Cluster0
+
+  user-service:
+    build: ./user-service
+    ports:
+      - '3002:3002'
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb+srv://usagie2007:1976lmzabab@cluster0.wivdsja.mongodb.net/spotify-microservices?retryWrites=true&w=majority&appName=Cluster0
+
+  music-service:
+    build: ./music-service
+    ports:
+      - '3003:3003'
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb+srv://usagie2007:1976lmzabab@cluster0.wivdsja.mongodb.net/spotify-microservices?retryWrites=true&w=majority&appName=Cluster0
+    volumes:
+      - ./music-service/uploads:/app/uploads
+
+volumes:
+  mongo-data: 
