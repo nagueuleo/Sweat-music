@@ -134,13 +134,16 @@ export class RegisterComponent {
     this.isLoading = true;
     this.error = "";
 
+    console.log("Submitting registration form with:", this.userData);
+
     this.authService.register(this.userData).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log("Registration successful, navigating to home");
         this.router.navigate(["/home"]);
       },
       error: (error) => {
-        this.error =
-          error.error?.message || "Registration failed. Please try again.";
+        console.error("Registration error:", error);
+        this.error = error.message || "Registration failed. Please try again.";
         this.isLoading = false;
       },
     });

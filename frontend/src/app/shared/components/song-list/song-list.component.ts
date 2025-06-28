@@ -80,7 +80,13 @@ import { AudioService } from "../../../core/services/audio.service";
             formatDuration(song.duration)
           }}</span>
         </div>
-
+        <!-- Source audio cachée pour compatibilité -->
+        <audio
+          *ngIf="song.audioUrl"
+          [src]="getAudioUrl(song)"
+          controls
+          style="display:none"
+        ></audio>
         <!-- Actions -->
         <div class="w-12 flex justify-center">
           <button
@@ -104,10 +110,16 @@ export class SongListComponent {
 
   constructor(
     public themeService: ThemeService,
-    private audioService: AudioService
+    public audioService: AudioService
   ) {}
 
   playSong(song: Song, index: number): void {
+    // If it's a public song, configure the queue with all public songs
+    if (song._id.startsWith("public-")) {
+      // Get all songs from the current list and set as queue
+      this.audioService.setPublicQueue(this.songs, song._id);
+    }
+
     this.audioService.playSong(song);
     this.songSelected.emit({ song, index });
   }
@@ -133,5 +145,9 @@ export class SongListComponent {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
+  }
+
+  public getAudioUrl(song: any): string {
+    return this.audioService.getAudioUrl(song);
   }
 }

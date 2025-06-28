@@ -121,12 +121,16 @@ export class LoginComponent {
     this.isLoading = true;
     this.error = "";
 
+    console.log("Submitting login form with:", this.credentials);
+
     this.authService.login(this.credentials).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log("Login successful, navigating to home");
         this.router.navigate(["/home"]);
       },
       error: (error) => {
-        this.error = error.error?.message || "Login failed. Please try again.";
+        console.error("Login error:", error);
+        this.error = error.message || "Login failed. Please try again.";
         this.isLoading = false;
       },
     });

@@ -146,6 +146,12 @@ import { ThemeService } from "../../../core/services/theme.service";
             {{ formatTime(audioState.duration) }}
           </span>
         </div>
+        <audio
+          *ngIf="audioState.currentSong"
+          [src]="getAudioUrl(audioState.currentSong)"
+          controls
+          style="display:none"
+        ></audio>
       </div>
 
       <!-- Volume Control -->
@@ -214,7 +220,7 @@ export class NowPlayingComponent implements OnInit {
   previousVolume = 0.7;
 
   constructor(
-    private audioService: AudioService,
+    public audioService: AudioService,
     private musicService: MusicService,
     public themeService: ThemeService
   ) {}
@@ -340,5 +346,9 @@ export class NowPlayingComponent implements OnInit {
     }
     // Backend images
     return "http://localhost:3000" + imageUrl;
+  }
+
+  public getAudioUrl(song: any): string {
+    return this.audioService.getAudioUrl(song);
   }
 }

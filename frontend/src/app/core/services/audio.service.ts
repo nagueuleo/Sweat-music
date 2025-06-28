@@ -57,27 +57,28 @@ export class AudioService {
   }
 
   loadSong(song: Song): void {
-    // Store current playing state
-    const wasPlaying = this.audioStateSubject.value.isPlaying;
-
     // Unload previous song if exists
     if (this.howl) {
       this.howl.unload();
+      this.howl = null;
     }
 
-    this.updateState({ isLoading: true, currentSong: song });
+    // Réinitialise l'état avant de charger la nouvelle chanson
+    this.updateState({
+      isLoading: true,
+      isPlaying: false,
+      currentSong: song,
+      currentTime: 0,
+      duration: 0,
+    });
 
     // Construct full URL for audio
     let audioUrl: string;
-
     if (song.audioUrl.startsWith("http")) {
-      // External URL
       audioUrl = song.audioUrl;
     } else if (song.audioUrl.startsWith("/songs/")) {
-      // Public songs from frontend/public/songs/
-      audioUrl = song.audioUrl; // Already correct for public folder
+      audioUrl = song.audioUrl;
     } else {
-      // Backend songs
       audioUrl = `http://localhost:3000${song.audioUrl}`;
     }
 
@@ -93,17 +94,13 @@ export class AudioService {
           isLoading: false,
           duration: this.howl?.duration() || 0,
         });
-
-        // Auto-play if it was playing before or if it's a new song selection
-        if (wasPlaying || this.audioStateSubject.value.isPlaying) {
-          this.play();
-        }
+        // Toujours jouer la chanson après chargement
+        this.play();
       },
       onplay: () => {
         console.log("Audio started playing");
         this.updateState({ isPlaying: true });
         this.startTimeUpdate();
-        // Record play in backend only for non-public songs
         if (!song._id.startsWith("public-")) {
           this.recordPlay(song._id);
         }
@@ -279,5 +276,25 @@ export class AudioService {
 
   getCurrentState(): AudioState {
     return this.audioStateSubject.value;
+  }
+
+  setPublicQueue(songs: Song[], currentSongId: string): void {
+    const songIndex = songs.findIndex((s) => s._id === currentSongId);
+    if (songIndex !== -1) {
+      this.setQueue(songs, songIndex);
+    }
+  }
+
+  getAudioUrl(song: { audioUrl: string }): string {
+    if (!song || !song.audioUrl) return "";
+    if (song.audioUrl.startsWith("/songs/")) {
+      // Musique locale (public)
+      return song.audioUrl;
+    } else if (song.audioUrl.startsWith("/uploads/audio/")) {
+      // Musique uploadée via le backend
+      return `http://localhost:3000${song.audioUrl}`;
+    }
+    // Cas fallback
+    return song.audioUrl;
   }
 }

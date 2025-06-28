@@ -377,6 +377,10 @@ export class HomeComponent implements OnInit {
   }
 
   playQuickAccess(song: Song): void {
+    // If it's a public song, configure the queue with all public songs
+    if (song._id.startsWith("public-")) {
+      this.audioService.setPublicQueue(this.popularSongs, song._id);
+    }
     this.audioService.playSong(song);
   }
 
